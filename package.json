@@ -4,20 +4,33 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
+    "test": "jest",
+    "start": "nodemon server.js",
+    "testcoverage": "jest --coverage"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@hapi/basic": "^5.1.0",
+    "@hapi/boom": "^7.4.2",
+    "@hapi/cookie": "^10.1.0",
     "@hapi/hapi": "^18.3.1",
+    "@hapi/joi": "^15.0.3",
     "async": "^3.0.1",
     "bcrypt": "^3.0.6",
+    "glob": "^7.1.4",
+    "hapi-auth-basic": "^5.0.0",
+    "hapi-auth-bearer-token": "^6.2.1",
+    "hapi-authorization": "^4.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "jwt-decode": "^2.2.0",
     "mongodb": "^3.2.7",
     "mongoose": "^5.5.12",
+    "ramda": "^0.26.1",
     "validator": "^11.0.0"
   },
   "devDependencies": {
+    "jest": "^24.8.0",
     "nodemon": "^1.19.1"
   }
 }
