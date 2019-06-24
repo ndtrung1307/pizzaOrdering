@@ -6,6 +6,14 @@ const pizzaOptionRoute = require('../routes/pizzaOption.route.config');
 
 exports.routesConfig = (server) => {
 
+    server.route({
+        method: 'GET',
+        path: '/',
+        handler: (req,h) => {
+            h.response('Welcome to Pizza API').code(200);            
+        }
+    });
+
     pizzaOptionRoute.routesconfig(server);
     productRoute.routesconfig(server);
     categoryRoute.routesconfig(server);
