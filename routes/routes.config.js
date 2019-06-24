@@ -10,7 +10,7 @@ exports.routesConfig = (server) => {
         method: 'GET',
         path: '/',
         handler: (req,h) => {
-            h.response('Welcome to Pizza API').code(200);            
+            return h.response('Welcome to Pizza APIs - Dev: Trung Nguyen').code(200);
         },
         options: {
             auth: false
