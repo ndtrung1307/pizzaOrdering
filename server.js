@@ -10,9 +10,18 @@ const dbConnect = require('./util/database');
 const init = async () => {
 
     const server = Hapi.server({
-        port: config.port,
-        host: 'localhost'
+        port: config.port
     });
+
+
+    await server.register([{
+        plugin: require('./plugins/jwt-auth/jwt.auth')
+    }, {
+        plugin: require('./plugins/hapi-autho/autho.hapi')
+    }]);
+
+    server.auth.default('Bearer');
+
 
     routesConfig.routesConfig(server);
     dbConnect;
@@ -23,6 +32,8 @@ const init = async () => {
         console.log('Server running on %s', server.info.uri);
     });
 };
+
+
 
 process.on('unhandledRejection', (err) => {
 
