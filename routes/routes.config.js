@@ -11,6 +11,9 @@ exports.routesConfig = (server) => {
         path: '/',
         handler: (req,h) => {
             h.response('Welcome to Pizza API').code(200);            
+        },
+        options: {
+            auth: false
         }
     });
 
