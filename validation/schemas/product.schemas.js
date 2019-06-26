@@ -2,31 +2,35 @@
 
 const Joi = require('@hapi/joi');
 
+const priceObject_create = Joi.object().keys({
+    size: Joi.string(),
+    price: Joi.number().integer().required()
+});
+
+const priceObject_update = Joi.object().keys({
+    size: Joi.string(),
+    price: Joi.number().integer()
+});
+
 module.exports = {
     validate: {
-        payload: {
-            name: Joi.string().required(),
-            description: Joi.string(),
-            category: Joi.string().required(),
-            picture: Joi.string().required(),
-            prices: [{
-                type: Joi.string(),
-                price: Joi.number().required()
-            }],
-            wrapper: [Joi.string()],
-            options: [Joi.string()]
-        },
-        payload_update: {
+        payload_create: Joi.object().keys({
+                name: Joi.string().required(),
+                description: Joi.string(),
+                picture: Joi.string().required(),
+                category: Joi.string().required(),
+                prices: Joi.array().items(priceObject_create),
+                wrapper: Joi.array().items(Joi.string()).unique().default([]),
+                options: Joi.array().items(Joi.string()).unique().default([])
+            }),
+        payload_update: Joi.object().keys({
             name: Joi.string(),
             description: Joi.string(),
-            category: Joi.string(),
             picture: Joi.string(),
-            prices: [{
-                type: Joi.string(),
-                price: Joi.number()
-            }],
-            wrapper: [Joi.string()],
-            options: [Joi.string()]
-        }
+            category: Joi.string(),
+            prices: Joi.array().items(priceObject_update),
+            wrapper: Joi.array().items(Joi.string()).unique().default([]),
+            options: Joi.array().items(Joi.string()).unique().default([])
+        })
     }
 };

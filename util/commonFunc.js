@@ -1,10 +1,33 @@
 
+const mongoose = require('mongoose');
+const Boom = require('@hapi/boom');
 
-module.exports.mergeUpdateObject = (object1, object2) => {
+module.exports.errorHandler = (err, h) => {
     
-    let keys = Object.keys(object1);
+    console.error(err);
+    
+    if (err instanceof mongoose.Error.CastError) {
+        return Boom.badRequest('Invalid ID or Querry Params');
+    }
 
-    keys.forEach( key => {
-        console.log(object1[key]);
-    });
+    if (err.isBoom) {
+        return h.response(err.output.payload).code(err.output.statusCode);
+    }
+
+    if (err.name === 'MongoError'){
+        switch (err.code) {
+            case 11000:
+                return Boom.conflict('Maybe new data conflict with another resource');
+        
+            default:
+                break;
+        }
+    }
+};
+
+module.exports.throwIfMissing = (val, Error) => {
+
+    if (val === null || val === undefined) {
+        throw Error;
+    }
 };

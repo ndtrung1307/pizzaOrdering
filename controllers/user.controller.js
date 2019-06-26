@@ -1,7 +1,7 @@
-const user = require('../models/user.model');
-// const authService = require('../services/auth.service');
 const userService = require('../services/user.service');
-const Boom = require('@hapi/boom');
+const commonFunctions = require('../util/commonFunc');
+const constans = require('../util/constants');
+
 
 /**
  * Register a User Account
@@ -23,7 +23,7 @@ exports.register = async (req, h) => {
         }
         return h.response('Create user faillue!').code(500);
     } catch (error) {
-        return h.response(Boom.internal());
+        return commonFunctions.errorHandler(error, h);
     }
 };
 exports.getUser = async (req, h) => {
@@ -34,7 +34,10 @@ exports.getUser = async (req, h) => {
                 
                 let id = req.auth.credentials._id;
                 user = await userService.getOneUser(id);
-                return h.response(user).code(201);
+                if (user) {
+                    return h.response(user).code(201);
+                }
+                return constans.boomMessage.invalidIDOrQueryParams;
             case 'ADMIN':
                 user = await userService.getAllUser();
                 return h.response(user).code(201);
@@ -43,7 +46,7 @@ exports.getUser = async (req, h) => {
                 break;
         }
     } catch (error) {
-        h.response(Boom.internal());
+        return commonFunctions.errorHandler(error, h);
     }
 };
 
@@ -51,9 +54,47 @@ exports.getOneUser = async (req, h) => {
     try {
         let id = req.params.id;
         let user = await userService.getOneUser(id);
-        return h.response(user).code(201);
+        if (user) {
+            return h.response(user).code(201);
+        }
+        return constans.boomMessage.invalidIDOrQueryParams;
     } catch (error) {
-        h.response(Boom.internal());
+        return commonFunctions.errorHandler(error, h);
+    }
+};
+
+exports.updateUser = async (req,h) => {
+    try {
+        let data = req.payload;
+        let id = req.auth.credentials._id;
+        let res = await userService.update(id, data);
+        if (res) {
+            return h.response({
+                msg: `User has been updated with id ${res._id}`
+            }).code(201);
+        }
+        return h.response({
+            msg: `Cannot update product with id ${id}`
+        }).code(500);
+    } catch (error) {
+        return commonFunctions.errorHandler(error, h);
+    }
+};
+exports.updateUserByID = async (req, h) => {
+    try {
+        let data = req.payload;
+        let id = req.params.id;
+        let res = await userService.update(id, data);
+        if (res) {
+            return h.response({
+                msg: `User has been updated with id ${res._id}`
+            }).code(201);
+        }
+        return h.response({
+            msg: `Cannot update product with id ${id}`
+        }).code(500);
+    } catch (error) {
+        return commonFunctions.errorHandler(error, h);
     }
 };
 
@@ -79,18 +120,21 @@ exports.UpdatePassword = async (req, h) => {
         }
         return isUpdated ? h.response('updateSuccess').code(201) : h.response('update failue').code(500);
     } catch (error) {
-        h.response(Boom.internal());
+        return commonFunctions.errorHandler(error, h);
     }
 };
 
 exports.deleteById = async (req, h) => {
     try {
         let id = req.params.id;
-        await userService.deleteOneUserAsAdmin(id);
-        return h.response({
-            msg: `User has been deleted with id ${req.params.id}`
-        }).code(201);
+        let res = await userService.deleteOneUserAsAdmin(id);
+        if (res) {
+            return h.response({
+                msg: `User has been deleted with id ${req.params.id}`
+            }).code(201);
+        }
+        return constans.boomMessage.invalidIDOrQueryParamsOrDeleted;
     } catch (error) {
-        h.response(Boom.internal());
+        return commonFunctions.errorHandler(error, h);
     }
 };

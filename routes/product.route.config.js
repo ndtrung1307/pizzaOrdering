@@ -6,12 +6,51 @@ const productValidator = require('../validation/schemas/product.schemas');
 exports.routesconfig = (server) => {
 
     server.route({
+        method: 'GET',
+        path: '/products',
+        handler: productController.getProduct,
+        options: {
+            description: 'Get all products',
+            notes: 'EVERYONE CAN DO THIS ACTION',
+            tags: ['api'],
+            auth: false
+        }
+    });
+
+    server.route({
+        method: 'GET',
+        path: '/products/{id}',
+        handler: productController.getOneProduct,
+        options: {
+            description: 'Get a product by ID',
+            notes: 'EVERYONE CAN DO THIS ACTION',
+            tags: ['api'],
+            auth: false
+        }
+    });
+
+    server.route({
+        method: 'GET',
+        path: '/categories/{categoryname}/products',
+        handler: productController.getProductBaseOnCategory,
+        options: {
+            description: 'Get all products of a category base on Category Name',
+            notes: 'EVERYONE CAN DO THIS ACTION',
+            tags: ['api'],
+            auth: false
+        }
+    });
+
+    server.route({
         method: 'POST',
-        path: '/product',
+        path: '/products',
         handler: productController.create,
         options: {
+            description: 'Create a new product',
+            notes: 'ONLY ADMIN CAN DO THIS ACTION',
+            tags: ['api'],
             validate: {
-                payload: productValidator.validate.payload
+                payload: productValidator.validate.payload_create
             },
             plugins: {
                 'hapiAuthorization': {
@@ -22,28 +61,16 @@ exports.routesconfig = (server) => {
     });
 
     server.route({
-        method: 'GET',
-        path: '/product',
-        handler: productController.getProduct,
-        options: {
-            auth: false
-        }
-    });
-
-    server.route({
-        method: 'GET',
-        path: '/product/{id}',
-        handler: productController.getOneProduct,
-        options: {
-            auth: false
-        }
-    });
-
-    server.route({
         method: 'PUT',
-        path: '/product/{id}',
+        path: '/products/{id}',
         handler: productController.updateProduct,
         options: {
+            description: 'Update product data by product ID',
+            notes: 'EVERYONE CAN DO THIS ACTION',
+            tags: ['api'],
+            validate: {
+                payload: productValidator.validate.payload_update
+            },
             auth: false
         }
     });
@@ -51,9 +78,12 @@ exports.routesconfig = (server) => {
 
     server.route({
         method: 'DELETE',
-        path: '/product/{id}',
+        path: '/products/{id}',
         handler: productController.deleteOneProduct,
         options: {
+            description: 'Delete a product by ID',
+            notes: 'ONLY ADMIN CAN DO THIS ACTION',
+            tags: ['api'],
             plugins: {
                 'hapiAuthorization': {
                     role: 'ADMIN'

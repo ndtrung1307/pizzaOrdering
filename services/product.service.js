@@ -8,55 +8,40 @@ module.exports = {
             name: data.name
         });
         if (product) {
-            throw Boom.conflict('product already exists!');
+            throw Boom.conflict('Product already exists!');
         }
        return productModel(data).save().then((result) =>{
            if (result) return({
                id: result._id,
                name: result.name
         });
-       }).catch((error)=> {
-            if (error) throw Boom.badData('Bad Data', Error);
        });
         
     },
     getAll: async () => {
-
-        let products = await productModel.find({});
+        let products = await productModel.find({}).populate(['category', 'options']);
         return products;
     },
 
     getOneProduct: async (id) => {
-
-        let product = await productModel.findById(id);
+        let product = await productModel.findById(id).populate(['category', 'options']);
         return product;
     },
 
     getProductBaseOnCategory: async (id) => {
-        try {
-            let products = await productModel.find({
-                category: id
-            });
-            return products;
-        } catch (error) {
-            return error;
-        }
+        let products = await productModel.find({
+            category: id
+        }).populate(['category', 'options']);
+        return products;
     },
 
     updateProduct : async (id, data) => {
-        try {
-            let result = await productModel.findByIdAndUpdate(id,data);
-            return result;
-        } catch (error) {
-            return error;
-        }
+        let result = await productModel.findByIdAndUpdate(id, data);
+        return result;
     },
 
     deleteOneProductAsAdmin: async (id) => {
-        try {
-            await productModel.findByIdAndDelete(id);
-        } catch (error) {
-            return error;
-        }
+        let res = await productModel.findByIdAndDelete(id);
+        return res;
     }
 };

@@ -1,9 +1,8 @@
-'use strict';
-
 const Boom = require('@hapi/boom');
 const userModel = require('../../models/user.model');
 const authService = require('../../services/auth.service');
 const userDTO = require('../../models/DTO/user.DTO');
+const commonFunctions = require('../../util/commonFunc');
 
 exports.login = async (req, h) => {
     try {
@@ -12,7 +11,7 @@ exports.login = async (req, h) => {
         });
         
         if (!user) {
-            throw Boom.notFound('This email is unvalid');
+            throw Boom.badRequest('This email is unvalid');
         }
         
         if (!user.comparePassword(req.payload.password)) {
@@ -25,6 +24,7 @@ exports.login = async (req, h) => {
             userData: userDTO.convertReturnUserProfileDTO(user)
         }).code(201);
     } catch (error) {
-        throw error;
+        return commonFunctions.errorHandler(error, h);
+
     }
 };

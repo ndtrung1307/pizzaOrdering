@@ -14,7 +14,8 @@ const productSchema = new Schema({
         type: String
     },
     category: {
-        type: String,
+        type: Schema.Types.ObjectId,
+        ref: 'Category',
         required: true
     },
     picture: {
@@ -29,24 +30,12 @@ const productSchema = new Schema({
         }
     }],
     wrapper: [String],
-    options: {
-        toppings: [{
-            name: {
-                type: String,
-            },
-            price: {
-                type: Number,
-            }
-        }],
-        crustoptions: [{
-            name: {
-                type: String,
-            },
-            price: {
-                type: Number,
-            }
-        }]
-    }
+    options: [{
+        type: Schema.Types.ObjectId,
+        ref: 'PizzaOption'
+    }]
 });
+
+
 
 module.exports = mongoose.model('Product', productSchema);

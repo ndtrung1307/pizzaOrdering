@@ -7,65 +7,13 @@ const userValidator = require('../validation/schemas/user.schemas');
 exports.routeconfig = (server) => {
    
     server.route({
-        method: 'POST',
-        path: '/register',
-        handler: userController.register,
-        options: {
-            validate: {
-                payload: userValidator.validate.payload_Signup
-            },
-            auth: false
-        }
-    });
-
-    // server.route({
-    //     method: 'PUT',
-    //     path: '/user/{id}',
-    //     handler: userController.UpdatePasswordUserAsAdmin,
-    //     options: {
-    //         validate: {
-    //             payload: personValidation.validate.payload_changePass
-    //         },
-    //         plugins: {
-    //             'hapiAuthorization': {
-    //                 role: 'ADMIN'
-    //             }
-    //         }
-    //     }
-    // });
-
-    server.route({
-        method: 'PUT',
-        path: '/user/password',
-        handler: userController.UpdatePassword,
-        options: {
-            validate: {
-                payload: userValidator.validate.payload_changePass
-            }
-        }
-    });
-
-    server.route({
-        method: 'PUT',
-        path: '/user/password/{id}',
-        handler: userController.UpdatePassword,
-        options: {
-            validate: {
-                payload: userValidator.validate.payload_changePass
-            },
-            plugins: {
-                'hapiAuthorization': {
-                    role: 'ADMIN'
-                }
-            }
-        }
-    });
-
-    server.route({
         method: 'GET',
-        path: '/user',
+        path: '/users',
         handler: userController.getUser,
         options: {
+            description: 'Get all user data AS AMIN OR Get a user data AS USER',
+            notes: 'ALL USER NEED TO SIGN IN TO DO THIS ACTION',
+            tags: ['api'],
             plugins: {
                 'hapiAuthorization': {
                     roles: ['USER', 'ADMIN']
@@ -76,9 +24,12 @@ exports.routeconfig = (server) => {
 
     server.route({
         method: 'GET',
-        path: '/user/{id}',
+        path: '/users/{id}',
         handler: userController.getOneUser,
         options: {
+            description: 'Get a user data by ID',
+            notes: 'ONLY ADMIN CAN DO THIS ACTION',
+            tags: ['api'],
             plugins: {
                 'hapiAuthorization': {
                     role: 'ADMIN'
@@ -88,10 +39,95 @@ exports.routeconfig = (server) => {
     });
 
     server.route({
+        method: 'POST',
+        path: '/register',
+        handler: userController.register,
+        options: {
+            description: 'Log up a new account',
+            notes: 'EVERYONE CAN DO THIS ACTION',
+            tags: ['api'],
+            validate: {
+                payload: userValidator.validate.payload_Signup
+            },
+            auth: false
+        }
+    });
+
+    server.route({
+        method: 'PUT',
+        path: '/users',
+        handler: userController.updateUser,
+        options: {
+            description: 'Change personal data of User',
+            notes: 'EVERY USER NEED TO SIGN IN TO DO THIS ACTION',
+            tags: ['api'],
+            validate: {
+                payload: userValidator.validate.payload_UpdateUser
+            }
+        }
+    });
+
+    server.route({
+        method: 'PUT',
+        path: '/users/{id}',
+        handler: userController.updateUserByID,
+        options: {
+            description: 'Change personal data of User by ID',
+            notes: 'ONLY ADMIN CAN DO THIS ACTION',
+            tags: ['api'],
+            validate: {
+                payload: userValidator.validate.payload_UpdateUser
+            },
+            plugins: {
+                'hapiAuthorization': {
+                    role: 'ADMIN'
+                }
+            }
+        }
+    });
+
+    server.route({
+        method: 'PUT',
+        path: '/users/password',
+        handler: userController.UpdatePassword,
+        options: {
+            description: 'Change account password',
+            notes: 'EVERY USER NEED TO SIGN IN TO DO THIS ACTION',
+            tags: ['api'],
+            validate: {
+                payload: userValidator.validate.payload_changePass
+            }
+        }
+    });
+
+    server.route({
+        method: 'PUT',
+        path: '/users/password/{id}',
+        handler: userController.UpdatePassword,
+        options: {
+            description: 'Change account data by user ID',
+            notes: 'ONLY ADMIN CAN DO THIS ACTION',
+            tags: ['api'],
+            validate: {
+                payload: userValidator.validate.payload_changePass
+            },
+            plugins: {
+                'hapiAuthorization': {
+                    role: 'ADMIN'
+                }
+            }
+        }
+    });
+
+
+    server.route({
         method: 'DELETE',
-        path: '/user/{id}',
+        path: '/users/{id}',
         handler: userController.deleteById,
         options: {
+            description: 'Delete a user by ID',
+            notes: 'ONLY ADMIN CAN DO THIS ACTION',
+            tags: ['api'],
             plugins: {
                 'hapiAuthorization': {
                     role: 'ADMIN'

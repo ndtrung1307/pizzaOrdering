@@ -3,7 +3,7 @@ const environmentVariable = require('../common/config/env.config');
 
 class Database {
     constructor() {
-        this._connect()
+        this._connect();
     }
 
     _connect() {
@@ -17,7 +17,7 @@ class Database {
             })
             .catch(err => {
                 console.error('Database connection error:' + err);
-            })
+            });
     }
     _close() {
         mongoose.connection.close();

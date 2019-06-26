@@ -6,12 +6,39 @@ const categoryValidator = require('../validation/schemas/category.schemas');
 exports.routesconfig = (server) => {
 
     server.route({
+        method: 'GET',
+        path: '/categories',
+        handler: categoryController.getCategory,
+        options: {
+            description: 'Get all category of products',
+            notes: 'Get All category of products - EVERYONE CAN DO THIS ACTION',
+            tags: ['api'],
+            auth: false
+        }
+    });
+
+    server.route({
+        method: 'GET',
+        path: '/categories/{id}',
+        handler: categoryController.getOneCategory,
+        options: {
+            description: 'Get a category by ID',
+            notes: 'EVERYONE CAN DO THIS ACTION',
+            tags: ['api'],
+            auth: false
+        }
+    });
+
+    server.route({
         method: 'POST',
-        path: '/category',
+        path: '/categories',
         handler: categoryController.create,
         options: {
+            description: 'Create a new category',
+            notes: 'ONLY AMIN CAN DO THIS ACTION',
+            tags: ['api'],
             validate: {
-                payload: categoryValidator.validate.payload
+                payload: categoryValidator.validate.payload_create
             },
             plugins: {
                 'hapiAuthorization': {
@@ -22,37 +49,32 @@ exports.routesconfig = (server) => {
     });
 
     server.route({
-        method: 'GET',
-        path: '/category',
-        handler: categoryController.getCategory,
+        method: 'PUT',
+        path: '/categories/{id}',
+        handler: categoryController.updateByID,
         options: {
-            auth: false
-        }
-    });
-
-    server.route({
-        method: 'GET',
-        path: '/category/{id}',
-        handler: categoryController.getOneCategory,
-        options: {
-            auth: false
-        }
-    });
-
-    server.route({
-        method: 'GET',
-        path: '/category/{categoryname}/products',
-        handler: categoryController.getProductBaseOnCategory,
-        options: {
-            auth: false
+            description: 'Update info of category',
+            notes: 'ONLY AMIN CAN DO THIS ACTION',
+            tags: ['api'],
+            validate: {
+                payload: categoryValidator.validate.payload_update
+            },
+            plugins: {
+                'hapiAuthorization': {
+                    role: 'ADMIN'
+                }
+            }
         }
     });
 
     server.route({
         method: 'DELETE',
-        path: '/category/{id}',
+        path: '/categories/{id}',
         handler: categoryController.deleteOneCategory,
         options: {
+            description: 'Delete a category by ID',
+            notes: 'ONLY ADMIN CAN DO THIS ACTION',
+            tags: ['api'],
             plugins: {
                 'hapiAuthorization': {
                     role: 'ADMIN'

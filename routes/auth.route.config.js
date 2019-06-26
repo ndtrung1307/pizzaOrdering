@@ -1,5 +1,5 @@
 const authController = require('../auth/controllers/authentication.controller');
-// const personValidation = require('../validation/schemas/user.schemas');
+const userValidation = require('../validation/schemas/user.schemas');
 
 
 
@@ -9,9 +9,12 @@ exports.routeconfig = (server) => {
         path: '/auth',
         handler: authController.login,
         options: {
-        //     validate: {
-        //         payload: personValidation.validate.payload
-        //     },
+            description: 'Login User account',
+            notes: 'Returns a token to authenticate user',
+            tags: ['api'],
+            validate: {
+                payload: userValidation.validate.payload
+            },
             auth: false
         }
     });

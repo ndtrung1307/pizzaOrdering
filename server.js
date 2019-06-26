@@ -18,6 +18,8 @@ const init = async () => {
         plugin: require('./plugins/jwt-auth/jwt.auth')
     }, {
         plugin: require('./plugins/hapi-autho/autho.hapi')
+    }, {
+        plugin: require('./plugins/hapi-swagger/hapi-swagger')
     }]);
 
     server.auth.default('Bearer');

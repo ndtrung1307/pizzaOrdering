@@ -1,10 +1,5 @@
-const bcrypt = require('bcrypt');
 const Boom = require('@hapi/boom');
 const categoryModel = require('../models/category.model');
-
-// const generateUserID = function () {
-//     return Math.random().toString(36).substring(2, 15);
-// };
 
 
 module.exports = {
@@ -12,6 +7,7 @@ module.exports = {
         const category = await categoryModel.findOne({
             name: data.name
         });
+
         if (category) {
             throw Boom.conflict('Category already exists!');
         }
@@ -23,6 +19,7 @@ module.exports = {
             name: cate.name
         };
         return returnData;
+        
     },
     getAll: async () => {
         let categories = await categoryModel.find({});
@@ -30,41 +27,26 @@ module.exports = {
     },
 
     getOneCategory: async (id) => {
-
         let category = await categoryModel.findById(id);
         return category;
     },
 
     getCategoryByName: async (name) => {
+                
+        let category = await categoryModel.find({
+            name: name
+        });
 
-        let category = await categoryModel.find({name: name});
         return category[0];
     },
 
-    // updatePassword: async (id, data) => {
-    //     try {
-    //         let item = await userModel.findById(id);
-    //         if (!item) throw Boom.notFound();
-
-    //         if (!item.comparePassword(data.oldpassword)) {
-    //             return false;
-    //         }
-    //         item.password = data.password;
-    //         let res = await item.save();
-    //         if (res) {
-    //             return true;
-    //         }
-    //         return false;
-    //     } catch (error) {
-    //         throw error;
-    //     }
-    // },
+    update: async (id,data) => {
+        let result = await categoryModel.findByIdAndUpdate(id, data);
+        return result;
+    },
 
     deleteOneCategoryAsAdmin: async (id) => {
-        try {
-            await categoryModel.findByIdAndDelete(id);
-        } catch (error) {
-            return err;
-        }
+        let res = await categoryModel.findByIdAndDelete(id);
+        return res;
     }
 };

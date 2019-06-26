@@ -1,7 +1,8 @@
 const productService = require('../services/product.service');
-const pizzaOptionService = require ('../services/pizzaOption.service');
+const categoryService = require('../services/category.service');
 const commonFunctions = require('../util/commonFunc');
-const Boom = require('@hapi/boom');
+const constans = require('../util/constants');
+
 
 /**
  * Register a User Account
@@ -18,21 +19,18 @@ exports.create = async (req, h) => {
         options: req.payload.options
     };
     try {
-        console.log('test'+ await pizzaOptionService.getPizzaOptionsByNames(req.payload.options));
-        
-        productdata.options = await pizzaOptionService.getPizzaOptionsByNames(req.payload.options);
         return productService.create(productdata).then((result)=>{
             if (result !== undefined) {
                 return h.response({
-                    Message: 'Create category successfully!',
+                    Message: 'Create product successfully!',
                     productinfo: result 
                 }).code(201);
             }
-            return h.response('Create category faillue!').code(500);
+            return h.response('Create product faillue!').code(500);
         });
         
     } catch (error) {
-        return h.response(Boom.internal());
+        return commonFunctions.errorHandler(error, h);
     }
 };
 exports.getProduct = async (req, h) => {
@@ -40,7 +38,7 @@ exports.getProduct = async (req, h) => {
         let products = await productService.getAll();
         return h.response(products).code(201);
     } catch (error) {
-        h.response(Boom.internal());
+        return commonFunctions.errorHandler(error, h);
     }
 };
 
@@ -48,9 +46,12 @@ exports.getOneProduct = async (req, h) => {
     try {
         let id = req.params.id;
         let product = await productService.getOneProduct(id);
-        return h.response(product).code(201);
+        if(product){
+            return h.response(product).code(201);
+        }
+        return constans.boomMessage.invalidIDOrQueryParams;
     } catch (error) {
-        h.response(Boom.internal());
+        return commonFunctions.errorHandler(error, h);
     }
 };
 
@@ -68,18 +69,37 @@ exports.updateProduct = async (req, h) => {
             msg: `Cannot update product with id ${id}`
         }).code(500);
     } catch (error) {
-        h.response(Boom.internal());
+        return commonFunctions.errorHandler(error, h);
+    }
+};
+
+exports.getProductBaseOnCategory = async (req, h) => {
+    try {
+        let categoryName = req.params.categoryname;
+        commonFunctions.throwIfMissing(categoryName,constans.boomMessage.invalidIDOrQueryParams);
+        
+        let category = await categoryService.getCategoryByName(categoryName);
+        commonFunctions.throwIfMissing(category, constans.boomMessage.invalidIDOrQueryParamsOrDeleted);
+
+        let products = await productService.getProductBaseOnCategory(category._id);
+        return h.response(products).code(201);
+    } catch (error) {
+        return commonFunctions.errorHandler(error, h);
     }
 };
 
 exports.deleteOneProduct = async (req, h) => {
     try {
         let id = req.params.id;
-        await productService.deleteOneProductAsAdmin(id);
-        return h.response({
-            msg: `Product has been deleted with id ${req.params.id}`
-        }).code(201);
+        let res = await productService.deleteOneProductAsAdmin(id);
+        if (res) {
+            return h.response({
+                msg: `Product has been deleted with id ${req.params.id}`
+            }).code(201);
+        }
+        return constans.boomMessage.invalidIDOrQueryParamsOrDeleted;
+
     } catch (error) {
-        h.response(Boom.internal());
+        return commonFunctions.errorHandler(error, h);
     }
 };
