@@ -1,6 +1,6 @@
 const Boom = require('@hapi/boom');
 const pizzaOptionModel = require('../models/pizzaOptions.model');
-
+const pizzaOptionDTO = require('../models/DTO/pizzaOption.DTO');
 
 module.exports = {
     create: async (data) => {
@@ -21,16 +21,24 @@ module.exports = {
     getAll: () => {
         return pizzaOptionModel.find({}).then((result) => {
             if (result) {
-                return result;
+                return pizzaOptionDTO.convertListOfReturnPizzaOptionDTO(result);
             }
         });
     },
 
     getOnePizzaOptions: async (id) => {
         let pizzaOption = await pizzaOptionModel.findById(id);
-        return pizzaOption;
+        return pizzaOptionDTO.convertReturnPizzaOptionDTO(pizzaOption);
     },
 
+    getListSimplePizzaOptions: async Ids => {
+        let pizzaOptions = await pizzaOptionModel.find({
+            _id: {
+                $in: Ids
+            }
+        });
+        return pizzaOptions === null ? null : pizzaOptionDTO.convertListOfReturnPizzaOptionDTOforOrder(pizzaOptions);
+    },
 
     updatePizzaOption: async (id, data) => {
         let result = await pizzaOptionModel.findByIdAndUpdate(id, data);

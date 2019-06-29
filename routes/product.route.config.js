@@ -1,7 +1,6 @@
-'use strict';
-
 const productController = require('../controllers/product.controller');
 const productValidator = require('../validation/schemas/product.schemas');
+const Joi = require('@hapi/joi');
 
 exports.routesconfig = (server) => {
 

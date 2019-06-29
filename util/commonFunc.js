@@ -31,3 +31,23 @@ module.exports.throwIfMissing = (val, Error) => {
         throw Error;
     }
 };
+
+module.exports.checkIfMissing = (val) => {
+
+    if (val === null || val === undefined) {
+        return true;
+    }
+    return false;
+};
+
+module.exports.setUserID = (req) => {
+    
+      switch (req.auth.credentials.role) {
+        case 'ADMIN':
+            return req.query.userId === undefined ? req.auth.credentials._id : req.query.userId;
+        case 'USER':
+            return req.auth.credentials._id;
+        default:
+            break;
+    }
+};

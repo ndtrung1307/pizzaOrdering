@@ -3,10 +3,6 @@ const categoryService = require('../services/category.service');
 const commonFunctions = require('../util/commonFunc');
 const constans = require('../util/constants');
 
-
-/**
- * Register a User Account
- */
 exports.create = async (req, h) => {
 
     let productdata = {

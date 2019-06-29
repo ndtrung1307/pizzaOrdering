@@ -3,6 +3,8 @@ const authRoute = require('../routes/auth.route.config');
 const categoryRoute = require('../routes/category.route.config');
 const productRoute = require('../routes/product.route.config');
 const pizzaOptionRoute = require('../routes/pizzaOption.route.config');
+const shippingAddressRoute = require('../routes/shippingAddress.route.config');
+const orderRoute = require('../routes/order.route.config');
 
 exports.routesConfig = (server) => {
 
@@ -17,9 +19,11 @@ exports.routesConfig = (server) => {
         }
     });
 
+    orderRoute.routesconfig(server);
+    shippingAddressRoute.routesconfig(server);
     pizzaOptionRoute.routesconfig(server);
     productRoute.routesconfig(server);
     categoryRoute.routesconfig(server);
     authRoute.routeconfig(server);
     userRoute.routeconfig(server);
-};
+};  
