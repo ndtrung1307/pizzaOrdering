@@ -2,10 +2,6 @@ const orderService = require('../services/order.service');
 const commonFunctions = require('../util/commonFunc');
 const constans = require('../util/constants');
 
-//private function 
-
-
-
 
 exports.create = async (req, h) => {
 
@@ -30,15 +26,19 @@ exports.create = async (req, h) => {
     }
 };
 exports.getOrders = async (req, h) => {
+
+    let size = req.query.size === undefined ? constans.ORDER.DEFAUT_SIZE : req.query.size;
+    let page = req.query.page === undefined ? constans.ORDER.DEFAUT_PAGE : req.query.page;
+
     try {
         let orders = null;
         switch (req.auth.credentials.role) {
             case 'ADMIN':
-                orders = await orderService.getAllOrders();
+                orders = await orderService.getAllOrders(size, page);
                 break;
 
             case 'USER':
-                orders = await orderService.getAllOrdersOfUser(req.auth.credentials._id);
+                orders = await orderService.getAllOrdersOfUser(req.auth.credentials._id, size, page);
                 break;
 
             default:
@@ -95,21 +95,6 @@ exports.updateShippingAddressForOrder = async (req, h) => {
         return commonFunctions.errorHandler(error, h);
     }
 };
-
-// exports.getProductBaseOnCategory = async (req, h) => {
-//     try {
-//         let categoryName = req.params.categoryname;
-//         commonFunctions.throwIfMissing(categoryName, constans.boomMessage.invalidIDOrQueryParams);
-
-//         let category = await categoryService.getCategoryByName(categoryName);
-//         commonFunctions.throwIfMissing(category, constans.boomMessage.invalidIDOrQueryParamsOrDeleted);
-
-//         let products = await productService.getProductBaseOnCategory(category._id);
-//         return h.response(products).code(201);
-//     } catch (error) {
-//         return commonFunctions.errorHandler(error, h);
-//     }
-// };
 
 exports.deleteOneOrder = async (req, h) => {
     try {

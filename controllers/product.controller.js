@@ -30,9 +30,28 @@ exports.create = async (req, h) => {
     }
 };
 exports.getProduct = async (req, h) => {
+
+    let size = req.query.size === undefined ? constans.PRODUCT.DEFAUT_SIZE : req.query.size;
+    let page = req.query.page === undefined ? constans.PRODUCT.DEFAUT_PAGE : req.query.page;
     try {
-        let products = await productService.getAll();
+        let products = await productService.getAll(size, page);
         return h.response(products).code(201);
+    } catch (error) {
+        return commonFunctions.errorHandler(error, h);
+    }
+};
+
+exports.getPopularProductList = async (req, h) => {
+    try {
+        let limit = req.query.limit === undefined ? constans.PRODUCT.PRODUCT_LIMIT : req.query.limit;
+        
+        let products = await productService.getPopularProductList(limit);
+
+         if (products) {
+             return h.response(products).code(201);
+         }
+         return constans.boomMessage.invalidIDOrQueryParams;
+
     } catch (error) {
         return commonFunctions.errorHandler(error, h);
     }

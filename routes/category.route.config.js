@@ -1,7 +1,6 @@
-'use strict';
-
 const categoryController = require('../controllers/category.controller');
 const categoryValidator = require('../validation/schemas/category.schemas');
+const commonValidator = require('../validation/common.Validate');
 
 exports.routesconfig = (server) => {
 
@@ -25,7 +24,10 @@ exports.routesconfig = (server) => {
             description: 'Get a category by ID',
             notes: 'EVERYONE CAN DO THIS ACTION',
             tags: ['api'],
-            auth: false
+            auth: false,
+            validate: {
+                params: commonValidator.objectId
+            }
         }
     });
 
@@ -38,6 +40,7 @@ exports.routesconfig = (server) => {
             notes: 'ONLY AMIN CAN DO THIS ACTION',
             tags: ['api'],
             validate: {
+                headers: commonValidator.TOKENValidate,
                 payload: categoryValidator.validate.payload_create
             },
             plugins: {
@@ -57,6 +60,8 @@ exports.routesconfig = (server) => {
             notes: 'ONLY AMIN CAN DO THIS ACTION',
             tags: ['api'],
             validate: {
+                headers: commonValidator.TOKENValidate,
+                params: commonValidator.objectId,
                 payload: categoryValidator.validate.payload_update
             },
             plugins: {
@@ -75,6 +80,10 @@ exports.routesconfig = (server) => {
             description: 'Delete a category by ID',
             notes: 'ONLY ADMIN CAN DO THIS ACTION',
             tags: ['api'],
+            validate: {
+                headers: commonValidator.TOKENValidate,
+                params: commonValidator.objectId
+            },
             plugins: {
                 'hapiAuthorization': {
                     role: 'ADMIN'

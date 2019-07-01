@@ -34,14 +34,6 @@ module.exports = {
         try {
             orderData = await mergeDataforOrder(orderData, data);
 
-            // let product = await orderModel.findOne({
-            //     name: data.name
-            // });
-            // if (product) {
-            //     throw Boom.conflict('Product already exists!');
-            // }
-
-
             return orderModel(orderData).save().then((result) => {
                 if (result) return ({
                     id: result._id
@@ -53,18 +45,18 @@ module.exports = {
 
     },
 
-    getAllOrders: async () => {
+    getAllOrders: async (size, page) => {
         let orders = await orderModel.find({}).populate({
                         path: 'user',
                         select: ['phone','firstname','lastname']
                         }).populate({
                             path: 'orderLines.product',
                             select: ['name', 'picture']
-                        });
+                        }).limit(size).skip((page -= 1) * size);
         return orders;
     },
 
-    getAllOrdersOfUser: async (userId) => {
+    getAllOrdersOfUser: async (userId, size, page) => {
         let orders = await orderModel.find({
             user: userId
         }).populate({
@@ -73,7 +65,7 @@ module.exports = {
         }).populate({
             path: 'orderLines.product',
             select: ['name', 'picture']
-        });
+        }).limit(size).skip((page -= 1) * size);
         return orders;
     },
 
@@ -103,13 +95,6 @@ module.exports = {
         });
         return order[0];
     },
-
-    // getProductBaseOnCategory: async (id) => {
-    //     let products = await productModel.find({
-    //         category: id
-    //     }).populate(['category', 'options']);
-    //     return products;
-    // },
 
     changeShippingAddress: async (id, userId, data) => {
 

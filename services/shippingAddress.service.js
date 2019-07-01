@@ -20,15 +20,15 @@ module.exports = {
             });
         });
     },
-    getAll: async () => {
-        let addresses = await addressModel.find({});
+    getAll: async (size, page) => {
+        let addresses = await addressModel.find({}).limit(size).skip((page -= 1) * size);
         return shippingAddressDTO.convertListOfReturnShippingAddressDTO(addresses);
     },
 
-    getAllAddressOfUser: async (userid) => {
+    getAllAddressOfUser: async (userid, size, page) => {
         let addresses = await addressModel.find({
             user: userid
-        });
+        }).limit(size).skip((page -= 1) * size);
         return shippingAddressDTO.convertListOfReturnShippingAddressDTO(addresses);
     },
 

@@ -26,18 +26,21 @@ exports.create = async (req, h) => {
 };
 exports.getAddress = async (req, h) => {
     let address;
+    let size = req.query.size === undefined ? constans.SHIPPINGADDRESS.DEFAUT_SIZE : req.query.size;
+    let page = req.query.page === undefined ? constans.SHIPPINGADDRESS.DEFAUT_PAGE : req.query.page;
+
     try {
         switch (req.auth.credentials.role) {
             case 'USER':
 
                 let id = req.auth.credentials._id;
-                address = await shippingAddressService.getAllAddressOfUser(id);
+                address = await shippingAddressService.getAllAddressOfUser(id, size, page);
                 if (address) {
                     return h.response(address).code(201);
                 }
                 return constans.boomMessage.invalidIDOrQueryParams;
             case 'ADMIN':
-                address = await shippingAddressService.getAll();
+                address = await shippingAddressService.getAll(size, page);
                 return h.response(address).code(201);
 
             default:

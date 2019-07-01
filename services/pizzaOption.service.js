@@ -21,14 +21,14 @@ module.exports = {
     getAll: () => {
         return pizzaOptionModel.find({}).then((result) => {
             if (result) {
-                return pizzaOptionDTO.convertListOfReturnPizzaOptionDTO(result);
+                return result;
             }
         });
     },
 
     getOnePizzaOptions: async (id) => {
         let pizzaOption = await pizzaOptionModel.findById(id);
-        return pizzaOptionDTO.convertReturnPizzaOptionDTO(pizzaOption);
+        return pizzaOption === null ? null : pizzaOptionDTO.convertReturnPizzaOptionDTO(pizzaOption);
     },
 
     getListSimplePizzaOptions: async Ids => {

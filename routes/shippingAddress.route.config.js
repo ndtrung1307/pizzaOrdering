@@ -1,6 +1,9 @@
 const shippingAddressController = require('../controllers/shippingAddress.controller');
 const shippingAddressValidator = require('../validation/schemas/shippingAddress.schemas');
 
+const commonValidator = require('../validation/common.Validate');
+const Joi = require('@hapi/joi');
+
 exports.routesconfig = (server) => {
 
     server.route({
@@ -10,7 +13,16 @@ exports.routesconfig = (server) => {
         options: {
             description: 'Get all shipping addresses',
             notes: 'EVERY USER CAN DO THIS ACTION',
-            tags: ['api']
+            tags: ['api'],
+            validate: {
+                headers: commonValidator.TOKENValidate,
+                query: {
+                    page: Joi.number().integer().min(1).description(
+                        'Paging of list Shipping addresses, start from 1'
+                    ),
+                    size: Joi.number().integer().description('Size of list result of Shipping addresses - defaut: 10'),
+                },
+            }
         }
     });
 
@@ -21,7 +33,11 @@ exports.routesconfig = (server) => {
         options: {
             description: 'Get a shipping address by ID',
             notes: 'EVERY USER CAN DO THIS ACTION',
-            tags: ['api']
+            tags: ['api'],
+            validate: {
+                headers: commonValidator.TOKENValidate,
+                params: commonValidator.objectId,
+            }
         }
     });
 
@@ -34,9 +50,10 @@ exports.routesconfig = (server) => {
             notes: 'EVERY USER NEEDS LOGIN TO DO THIS ACTION',
             tags: ['api'],
             validate: {
+                headers: commonValidator.TOKENValidate,
                 payload: shippingAddressValidator.validate.payload_create
             }
-        }
+        },
     });
 
     server.route({
@@ -48,6 +65,8 @@ exports.routesconfig = (server) => {
             notes: 'EVERY USER CAN DO THIS ACTION',
             tags: ['api'],
             validate: {
+                headers: commonValidator.TOKENValidate,
+                params: commonValidator.objectId,
                 payload: shippingAddressValidator.validate.payload_update
             }
         }
@@ -60,7 +79,11 @@ exports.routesconfig = (server) => {
         options: {
             description: 'Delete a shipping address by ID',
             notes: 'EVERY USER CAN DO THIS ACTION',
-            tags: ['api']
+            tags: ['api'],
+            validate: {
+                headers: commonValidator.TOKENValidate,
+                params: commonValidator.objectId,
+            }
         }
     });
 

@@ -1,5 +1,6 @@
 const Boom = require('@hapi/boom');
 const productModel = require('../models/product.model');
+const orderModel = require('../models/order.model');
 const commonFunction = require('../util/commonFunc');
 
 module.exports = {
@@ -18,14 +19,14 @@ module.exports = {
        });
         
     },
-    getAll: async () => {
+    getAll: async (size, page) => {
         let products = await productModel.find({}).populate({
             path: 'category',
             select: 'name'
         }).populate({
             path: 'options',
             select: ['name', 'price', 'type']
-        });
+        }).limit(size).skip((page-=1)*size);
         return products;
     },
 
@@ -42,6 +43,44 @@ module.exports = {
         commonFunction.throwIfMissing(product.prices.id(priceId), Boom.badRequest('Unvalid Price ID'));
         
         return product.prices.id(priceId);
+    },
+
+    getPopularProductList : async (limit) => {
+        let products = await orderModel.aggregate([
+            {
+                $unwind: '$orderLines'
+            }, {
+                $replaceRoot: {
+                    newRoot: {
+                        $mergeObjects: ["$orderLines", "$$ROOT"]
+                    }
+                }
+            }, {
+                $group: {
+                    _id: "$product",
+                    quantity: {
+                        $sum: "$quantity"
+                    }
+                }
+            }, {
+                $sort: {
+                    quantity: -1
+                }
+            }
+        ]).limit(limit);
+
+        var productIds = products.map(function (item) {
+            return item._id;
+        });
+
+        products = await productModel.find({
+            _id: {
+                $in: productIds
+            }
+        }).populate(['category', 'options']);
+        
+        return products;
+
     },
 
     getProductBaseOnCategory: async (id) => {

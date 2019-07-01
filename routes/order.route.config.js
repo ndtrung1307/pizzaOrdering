@@ -2,7 +2,7 @@
 const orderController = require('../controllers/order.controller');
 const orderValidator = require('../validation/schemas/order.schemas');
 const commonValidator = require('../validation/common.Validate');
-
+const Joi = require('@hapi/joi');
 
 exports.routesconfig = (server) => {
 
@@ -13,7 +13,16 @@ exports.routesconfig = (server) => {
         options: {
             description: 'Get all Order',
             notes: 'EVERY USER CAN DO THIS ACTION',
-            tags: ['api']
+            tags: ['api'],
+            validate: {
+                headers: commonValidator.TOKENValidate,
+                query: {
+                    page: Joi.number().integer().min(1).description(
+                        'Paging of list orders, start from 1'
+                    ),
+                    size: Joi.number().integer().description('Size of list result of orders - defaut: 10'),
+                },
+            }
         }
     });
 
@@ -26,6 +35,7 @@ exports.routesconfig = (server) => {
             notes: 'EVERYONE CAN DO THIS ACTION',
             tags: ['api'],
             validate: {
+                headers: commonValidator.TOKENValidate,
                 params: commonValidator.objectId,
             }
         }
@@ -40,6 +50,7 @@ exports.routesconfig = (server) => {
             notes: 'EVERY USER CAN DO THIS ACTION',
             tags: ['api'],
             validate: {
+                headers: commonValidator.TOKENValidate,
                 payload: orderValidator.validate.payload_create
             }
         }
@@ -54,6 +65,7 @@ exports.routesconfig = (server) => {
             notes: 'EVERY USER CAN DO THIS ACTION',
             tags: ['api'],
             validate: {
+                headers: commonValidator.TOKENValidate,
                 payload: orderValidator.validate.payload_update,
                 params: commonValidator.objectId
             },
@@ -71,6 +83,7 @@ exports.routesconfig = (server) => {
             tags: ['api'],
             plugins: {
                 validate: {
+                    headers: commonValidator.TOKENValidate,
                     params: commonValidator.objectId
                 },
             }

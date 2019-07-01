@@ -1,6 +1,7 @@
 const productController = require('../controllers/product.controller');
 const productValidator = require('../validation/schemas/product.schemas');
 const Joi = require('@hapi/joi');
+const commonValidator = require('../validation/common.Validate');
 
 exports.routesconfig = (server) => {
 
@@ -12,7 +13,34 @@ exports.routesconfig = (server) => {
             description: 'Get all products',
             notes: 'EVERYONE CAN DO THIS ACTION',
             tags: ['api'],
-            auth: false
+            auth: false,
+            validate: {
+                query: {
+                    page: Joi.number().integer().min(1).description(
+                        'Paging of list product, start from 1'
+                    ),
+                    size: Joi.number().integer().description('Size of list result of product - defaut: 20'),
+                },
+            },
+        }
+    });
+
+    server.route({
+        method: 'GET',
+        path: '/products/popular',
+        handler: productController.getPopularProductList,
+        options: {
+            description: 'Get popular product list.',
+            notes: 'EVERYONE CAN DO THIS ACTION',
+            tags: ['api'],
+            auth: false, 
+            validate: {
+                query: {
+                    limit: Joi.number().integer().description(
+                        'Un-required query for limit of popular product - Default is 5 products. Eg: ?limit=10'
+                    ),
+                },
+            },
         }
     });
 
@@ -24,7 +52,10 @@ exports.routesconfig = (server) => {
             description: 'Get a product by ID',
             notes: 'EVERYONE CAN DO THIS ACTION',
             tags: ['api'],
-            auth: false
+            auth: false,
+            validate: {
+                params: commonValidator.objectId
+            }
         }
     });
 
@@ -49,6 +80,7 @@ exports.routesconfig = (server) => {
             notes: 'ONLY ADMIN CAN DO THIS ACTION',
             tags: ['api'],
             validate: {
+                headers: commonValidator.TOKENValidate,
                 payload: productValidator.validate.payload_create
             },
             plugins: {
@@ -68,6 +100,8 @@ exports.routesconfig = (server) => {
             notes: 'EVERYONE CAN DO THIS ACTION',
             tags: ['api'],
             validate: {
+                headers: commonValidator.TOKENValidate,
+                params: commonValidator.objectId,
                 payload: productValidator.validate.payload_update
             },
             auth: false
@@ -83,6 +117,10 @@ exports.routesconfig = (server) => {
             description: 'Delete a product by ID',
             notes: 'ONLY ADMIN CAN DO THIS ACTION',
             tags: ['api'],
+            validate: {
+                headers: commonValidator.TOKENValidate,
+                params: commonValidator.objectId
+            },
             plugins: {
                 'hapiAuthorization': {
                     role: 'ADMIN'

@@ -1,7 +1,6 @@
-'use strict';
-
 const userController = require('../controllers/user.controller');
 const userValidator = require('../validation/schemas/user.schemas');
+const commonValidator = require('../validation/common.Validate');
 
 
 exports.routeconfig = (server) => {
@@ -14,6 +13,9 @@ exports.routeconfig = (server) => {
             description: 'Get all user data AS AMIN OR Get a user data AS USER',
             notes: 'ALL USER NEED TO SIGN IN TO DO THIS ACTION',
             tags: ['api'],
+            validate: {
+                headers: commonValidator.TOKENValidate
+            },
             plugins: {
                 'hapiAuthorization': {
                     roles: ['USER', 'ADMIN']
@@ -30,6 +32,10 @@ exports.routeconfig = (server) => {
             description: 'Get a user data by ID',
             notes: 'ONLY ADMIN CAN DO THIS ACTION',
             tags: ['api'],
+            validate: {
+                headers: commonValidator.TOKENValidate,
+                params: commonValidator.objectId
+            },
             plugins: {
                 'hapiAuthorization': {
                     role: 'ADMIN'
@@ -62,6 +68,7 @@ exports.routeconfig = (server) => {
             notes: 'EVERY USER NEED TO SIGN IN TO DO THIS ACTION',
             tags: ['api'],
             validate: {
+                headers: commonValidator.TOKENValidate,
                 payload: userValidator.validate.payload_UpdateUser
             }
         }
@@ -76,6 +83,8 @@ exports.routeconfig = (server) => {
             notes: 'ONLY ADMIN CAN DO THIS ACTION',
             tags: ['api'],
             validate: {
+                headers: commonValidator.TOKENValidate,
+                params: commonValidator.objectId,
                 payload: userValidator.validate.payload_UpdateUser
             },
             plugins: {
@@ -95,6 +104,7 @@ exports.routeconfig = (server) => {
             notes: 'EVERY USER NEED TO SIGN IN TO DO THIS ACTION',
             tags: ['api'],
             validate: {
+                headers: commonValidator.TOKENValidate,
                 payload: userValidator.validate.payload_changePass
             }
         }
@@ -109,6 +119,8 @@ exports.routeconfig = (server) => {
             notes: 'ONLY ADMIN CAN DO THIS ACTION',
             tags: ['api'],
             validate: {
+                headers: commonValidator.TOKENValidate,
+                params: commonValidator.objectId,
                 payload: userValidator.validate.payload_changePass
             },
             plugins: {
@@ -128,6 +140,10 @@ exports.routeconfig = (server) => {
             description: 'Delete a user by ID',
             notes: 'ONLY ADMIN CAN DO THIS ACTION',
             tags: ['api'],
+            validate: {
+                headers: commonValidator.TOKENValidate,
+                params: commonValidator.objectId
+            },
             plugins: {
                 'hapiAuthorization': {
                     role: 'ADMIN'

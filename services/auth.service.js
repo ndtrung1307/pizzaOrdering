@@ -4,7 +4,6 @@ const jwtDecode = require('jwt-decode');
 
 module.exports = {
     createToken: async (user) => {
-        console.log(user);
         // Sign the JWT
         return jwt.sign({
             id: user._id
