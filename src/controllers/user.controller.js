@@ -2,6 +2,8 @@ const userService = require('../services/user.service');
 const commonFunctions = require('../util/commonFunc');
 const constans = require('../util/constants');
 
+const userDTO = require ('../models/DTO/user.DTO');
+
 
 /**
  * Register a User Account
@@ -35,7 +37,7 @@ exports.getUser = async (req, h) => {
                 let id = req.auth.credentials._id;
                 user = await userService.getOneUser(id);
                 if (user) {
-                    return h.response(user).code(201);
+                    return h.response(userDTO.convertReturnUserProfileDTO(user)).code(201);
                 }
                 return constans.boomMessage.invalidIDOrQueryParams;
             case 'ADMIN':

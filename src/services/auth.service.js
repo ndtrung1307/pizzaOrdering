@@ -6,11 +6,10 @@ module.exports = {
     createToken: async (user) => {
         // Sign the JWT
         return jwt.sign({
-            _id: user._id,
+            id: user._id,
             email: user.email,
             firstname: user.firstname,
-            lastname: user.lastname,
-            phone: user.phone
+            lastname: user.lastname
         }, config.jwt_secret, {
             algorithm: 'HS256',
             expiresIn: "1h"
