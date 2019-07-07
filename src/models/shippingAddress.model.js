@@ -8,6 +8,11 @@ const shippingAddressSchema = new Schema({
         ref: 'User',
         required: true
     },
+    type: {
+        type: String,
+        default: 'userShippingAddress',
+        required: true,
+    },
     houseNumber: {
         type: String,
         required: true

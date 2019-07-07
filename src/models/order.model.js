@@ -8,6 +8,23 @@ const orderSchema = new Schema({
         ref: 'User',
         required: true
     },
+    name: {
+        type: String,
+        required: true
+    },
+    phone: {
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true
+    },
+    orderMethod: {
+        type: String,
+        required: true
+    },
+    note: String,
     status: {
         type: String,
         default: 'received the order'
@@ -92,7 +109,5 @@ const orderSchema = new Schema({
         required: true
     }
 });
-
-
 
 module.exports = mongoose.model('Order', orderSchema);

@@ -23,6 +23,10 @@ module.exports = {
     SHIPPINGADDRESS : {
         DEFAUT_SIZE: 10,
         DEFAUT_PAGE: 1
-    }
+    },
+
+    PAYMENT_METHOD: ['COD'],
+
+    ORDER_METHOD: ['DELIVERY', 'CARRYOUT']
 
 };

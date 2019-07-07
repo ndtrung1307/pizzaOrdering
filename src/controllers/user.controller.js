@@ -9,7 +9,7 @@ const constans = require('../util/constants');
 exports.register = async (req, h) => {
 
     let userdata = {
-        email: req.payload.email,
+        email: req.payload.email.toLowerCase(),
         password: req.payload.password,
         phone: req.payload.phone,
         firstname: req.payload.firstname,

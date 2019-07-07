@@ -4,10 +4,38 @@ const productService = require('../services/product.service');
 const shippingAddressService = require('../services/shippingAddress.service');
 const pizzaOptionService = require('../services/pizzaOption.service');
 const commonFuntions = require('../util/commonFunc');
+const mailer = require('../util/mailer');
+
+const sendEmailToCustomer = (id) => {
+    orderModel.findById(id).populate({
+        path: 'user',
+        select: ['phone', 'firstname', 'lastname','email']
+    }).populate({
+        path: 'orderLines.product',
+        select: ['name']
+    }).then((res) => {
+        mailer.sendMail(res);
+    }).catch((err) => {
+        console.error(err);
+    });
+};
 
 async function mergeDataforOrder (orderData, data) {
     
-    orderData.shippingAddress = await shippingAddressService.getOneAddress(data.shippingAddress, orderData.user);
+    switch (data.orderMethod) {
+        case 'CARRYOUT':
+            orderData.shippingAddress = await shippingAddressService.getOneStoreAddress(data.shippingAddress);
+            break;
+        
+        case 'DELIVERY':
+            orderData.shippingAddress = await shippingAddressService.getOneAddress(data.shippingAddress, orderData.user);
+            break;
+
+        default:
+            break;
+    }
+  
+
     commonFuntions.throwIfMissing(orderData.shippingAddress, Boom.badRequest('Invalid shipping address!'));
     orderData.orderLines = [];
 
@@ -26,18 +54,32 @@ async function mergeDataforOrder (orderData, data) {
         orderData.orderLines.push(orderLine);
         orderData.orderTotal += orderLine.totalLine;
     }
+
+    orderData.name = data.name;
+    orderData.orderMethod = data.orderMethod;
+    orderData.phone = data.phone;
+    orderData.email = data.email;
+    if (data.note !== undefined && data.note !== null) {
+        orderData.note = data.note;
+    }
+
     return orderData;
 }
 
 module.exports = {
     create: async (orderData,data) => {
         try {
-            orderData = await mergeDataforOrder(orderData, data);
+            orderData = await mergeDataforOrder(orderData, data).catch((err) => {
+                throw err;
+            });
 
             return orderModel(orderData).save().then((result) => {
-                if (result) return ({
-                    id: result._id
-                });
+                if (result){
+                    sendEmailToCustomer(result._id);
+                    return ({
+                        id: result._id
+                    });
+                }
             });
         } catch (error) {
             throw error;

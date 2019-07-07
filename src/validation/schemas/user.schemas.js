@@ -10,7 +10,7 @@ module.exports = {
         payload_Signup: {
             email: Joi.string().email({minDomainSegments: 2}).required(),
             password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/).required(),
-            phone: Joi.string().regex(/^[0-9]{10,13}$/).required(),
+            phone: Joi.string().regex(/^[0-9+]{10,13}$/).required(),
             firstname: Joi.string().required(),
             lastname: Joi.string().required()
         },

@@ -17,7 +17,12 @@ exports.create = async (req, h) => {
     try {
         let address = await shippingAddressService.create(addressdata);
         if (address) {
-            return h.response('Create new shipping address successfully!').code(201);
+            console.log(address);
+            
+            return h.response({
+                'Message': 'Create new shipping address successfully!',
+                '_id': address.id
+            }).code(201);
         }
         return h.response('Create shipping address faillue!').code(500);
     } catch (error) {

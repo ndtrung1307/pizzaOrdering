@@ -1,9 +1,9 @@
-
+require('dotenv').config();
 const Hapi = require('@hapi/hapi');
-const config = require('./common/config/env.config');
-const routesConfig = require('./routes/routes.config');
+const config = require('./src/common/config/env.config');
+const routesConfig = require('./src/routes/routes.config');
 
-const dbConnect = require('./util/database');
+const dbConnect = require('./src/util/database');
 
 
 
@@ -15,16 +15,15 @@ const init = async () => {
 
 
     await server.register([{
-        plugin: require('./plugins/jwt-auth/jwt.auth')
+        plugin: require('./src/plugins/hapi-autho/autho.hapi')
     }, {
-        plugin: require('./plugins/hapi-autho/autho.hapi')
+        plugin: require('./src/plugins/jwt-auth/jwt.auth')
     }, {
-        plugin: require('./plugins/hapi-swagger/hapi-swagger')
+        plugin: require('./src/plugins/hapi-swagger/hapi-swagger')
     }]);
 
     server.auth.default('Bearer');
-
-
+    
     routesConfig.routesConfig(server);
     dbConnect;
     await server.start((err) =>{

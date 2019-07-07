@@ -41,6 +41,15 @@ module.exports = {
         return address === null ? null : shippingAddressDTO.convertReturnShippingAddressDTO(address);
     },
 
+    getOneStoreAddress: async (id) => {
+        let address = await addressModel.findOne({
+            _id: id,
+            type: "storeAddress"
+        });
+
+        return address === null ? null : shippingAddressDTO.convertReturnShippingAddressDTO(address);
+    },
+
     updateAddress: async (id, userid, data) => {
         let result = await addressModel.findOneAndUpdate({
             _id : id,
