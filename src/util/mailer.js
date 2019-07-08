@@ -2,21 +2,26 @@ require('dotenv').config();
 const nodemailer = require("nodemailer");
 const generateOrderEmail = require('./generateOrderFormat');
 
+const contant = require('./constants');
+
 
 
 module.exports.sendMail = (data) => {
     var auth = {
         type: 'oauth2',
-        user: process.env.MAILER_USER,
-        clientId: process.env.MAILER_CLIENTID,
-        clientSecret: process.env.MAILER_CLIENTSECRET,
-        refreshToken: process.env.MAILER_REFRESHTOKEN,
+        user: contant.MAILER_USER,
+        clientId: contant.MAILER_CLIENTID,
+        clientSecret: contant.MAILER_CLIENTSECRET,
+        refreshToken: contant.MAILER_REFRESHTOKEN,
     };
+
+    console.log(auth);
+    
 
     const body = generateOrderEmail.generateOrderEmail(data);
 
     var mailOptions = {
-        from: '"Pizzas Company" <' + process.env.MAILER_USER + '>', // sender address
+        from: '"Pizzas Company" <' + contant.MAILER_USER + '>', // sender address
         to: data.email, // list of receivers
         subject: 'Order #' + data._id + ' ready to ship to you', // Subject line
         text: "", // plain text body

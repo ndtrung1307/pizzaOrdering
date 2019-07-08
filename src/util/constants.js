@@ -27,6 +27,11 @@ module.exports = {
 
     PAYMENT_METHOD: ['COD'],
 
-    ORDER_METHOD: ['DELIVERY', 'CARRYOUT']
+    ORDER_METHOD: ['DELIVERY', 'CARRYOUT'],
+
+    MAILER_CLIENTID: '900559736433-kaqaictllvnpptrf3p38hjo55l9bbpof.apps.googleusercontent.com',
+    MAILER_CLIENTSECRET : 'V6Bx6pFbH5MWpFSWcBh0lVqm',
+    MAILER_REFRESHTOKEN : '1/1dFhCbZleDpNN6MfvrezajXoRADD4Xh_-KvCGwqtYbw',
+    MAILER_USER : 'pizza.ordering.api@gmail.com'
 
 };
