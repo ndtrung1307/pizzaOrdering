@@ -45,10 +45,12 @@ async function mergeDataforOrder (orderData, data) {
         orderLine.totalLine = 0;
         if (!commonFuntions.checkIfMissing(orderLine.options)){
             orderLine.options = await pizzaOptionService.getListSimplePizzaOptions(orderLine.options);
+            commonFuntions.throwIfMissing(orderLine.options, Boom.internal());
+            // orderLine.totalLine = orderLine.options.reduce((total, currentValue) => {
+            //     return total.price + currentValue.price;
+            // });
 
-            orderLine.totalLine = orderLine.options.reduce((total, currentValue) => {
-                return total.price + currentValue.price;
-            });
+            orderLine.totalLine = orderLine.options.reduce((a, b) => a + (b.price || 0), 0);
         }
         orderLine.totalLine += orderLine.unitPrice.price * orderLine.quantity;
         orderData.orderLines.push(orderLine);
