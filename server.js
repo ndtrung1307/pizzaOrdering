@@ -3,6 +3,8 @@ const Hapi = require('@hapi/hapi');
 const config = require('./src/common/config/env.config');
 const routesConfig = require('./src/routes/routes.config');
 
+const consumer = require('./src/kafka/consumer');
+
 const dbConnect = require('./src/util/database');
 
 
@@ -23,7 +25,9 @@ const init = async () => {
     }]);
 
     server.auth.default('Bearer');
-    
+
+    consumer;
+
     routesConfig.routesConfig(server);
     dbConnect;
     await server.start((err) =>{

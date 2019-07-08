@@ -138,6 +138,15 @@ module.exports = {
         return order[0];
     },
 
+    updateStatusByDelivery: async (data) => {
+        let updateData = {
+            status : data.status
+        }
+        let result = await orderModel.findByIdAndUpdate(data._id, updateData);
+        console.log(result);
+        
+    },
+
     changeShippingAddress: async (id, userId, data) => {
 
         let address = await shippingAddressService.getOneAddress(data.shippingAddress, userId);
