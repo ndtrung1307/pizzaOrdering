@@ -25,7 +25,7 @@ module.exports = {
         DEFAUT_PAGE: 1
     },
 
-    PAYMENT_METHOD: ['COD'],
+    PAYMENT_METHOD: ['CASH'],
 
     ORDER_METHOD: ['DELIVERY', 'CARRYOUT'],
 
