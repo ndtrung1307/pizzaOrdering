@@ -21,7 +21,7 @@ module.exports.sendMail = (data) => {
     const body = generateOrderEmail.generateOrderEmail(data);
 
     var mailOptions = {
-        from: '"Pizzas Company" <' + contant.MAILER_USER + '>', // sender address
+        from: '"PYCO Pizzas Company" <' + contant.MAILER_USER + '>', // sender address
         to: data.email, // list of receivers
         subject: 'Order #' + data._id + ' ready to ship to you', // Subject line
         text: "", // plain text body
