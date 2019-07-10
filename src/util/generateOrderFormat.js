@@ -47,7 +47,7 @@ module.exports.generateOrderEmail = (data) => {
             htmlOrderFormat += '<td valign="top" style="padding:3px 9px 9px 9px;border-top:0;border-left:0;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#444;line-height:18px;font-weight:normal"> <strong>Method:</strong> Carry Out<br> <strong>Store Address: </strong><br>' + data.shippingAddress.houseNumber + ', ' + data.shippingAddress.street + ' street<br>' + data.shippingAddress.dictrict + ' dictrict, ' + data.shippingAddress.province + ',<br> Việt Nam</td></tr></tbody>';
             break;
         case 'DELIVERY':
-            htmlOrderFormat += '<td valign="top" style="padding:3px 9px 9px 9px;border-top:0;border-left:0;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#444;line-height:18px;font-weight:normal"> <strong>Method:</strong> Delivery<br>' + data.name + '<br>' + data.shippingAddress.houseNumber + ', ' + data.shippingAddress.street + ' street<br>' + data.shippingAddress.dictrict + ' dictrict, ' + data.shippingAddress.province + ',<br> Việt Nam<br> Tell: ' + data.phone + '</td></tr></tbody>';
+            htmlOrderFormat += '<td valign="top" style="padding:3px 9px 9px 9px;border-top:0;border-left:0;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#444;line-height:18px;font-weight:normal"> <strong>Method:</strong> Delivery<br>' + data.name + '<br>' + data.shippingAddress.houseNumber + ', ' + data.shippingAddress.street + ' street<br>' + data.shippingAddress.dictrict + ', ' + data.shippingAddress.province + ',<br> Việt Nam<br> Tell: ' + data.phone + '</td></tr></tbody>';
             break;
 
         default:
